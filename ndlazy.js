@@ -18,7 +18,7 @@ function createLazyArray(shape, get_func, set_func) {
   }
   var shape_bits = new Array(d)
   var total_bits = 0
-  var className = "Lazy1DStore_" + func.name
+  var className = "Proxy1DStore"
   for(var i=0; i<d; ++i) {
     shape_bits[i] = bits.log2(bits.nextPow2(shape[i]))
     total_bits += shape_bits[i]

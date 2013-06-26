@@ -6,6 +6,9 @@ require("tape")("ndarray-lazy", function(t) {
   var x = lazy([10, 10], function(i, j) {
     last_accessed = [i,j]
     return 10*i + j
+  }, function(i,j,v) {
+    last_accessed = [i,j,v]
+    return 0
   })
 
   t.equals(x.get(1,2), 12)
@@ -17,8 +20,11 @@ require("tape")("ndarray-lazy", function(t) {
   t.equals(x.lo(2,3).get(1,1), 34)
   t.same(last_accessed, [3,4])
   
-  x.transpose(1,0).get(3,7)
-  x.set(0,0,1)
+  t.equals(x.transpose(1,0).get(3,7), 73)
+  t.same(last_accessed, [7,3])
+  
+  x.set(0,2,1)
+  t.same(last_accessed, [0,2,1])
   
   t.end()
 })
