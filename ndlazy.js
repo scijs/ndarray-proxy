@@ -3,8 +3,19 @@
 var ndarray = require("ndarray")
 var bits = require("bit-twiddle")
 
-function createLazyArray(shape, func) {
+function defaultGetter() {
+  throw new Error("ndarray-lazy: Getter not implemented")
+}
+
+function defaultSetter() {
+  throw new Error("ndarray-lazy: Setter not implemented")
+}
+
+function createLazyArray(shape, get_func, set_func) {
   var d = shape.length
+  if(d === 0) {
+    return ndarray([], [])
+  }
   var shape_bits = new Array(d)
   var total_bits = 0
   var className = "Lazy1DStore_" + func.name
@@ -32,13 +43,12 @@ function createLazyArray(shape, func) {
   
   var code = ["'use strict'"]
   code.push(["function ", className, "(){};var proto=", className].join(""))
-  code.push("proto.set=function(i,v){throw new Error('ndarray-lazy: Can\\'t write to lazy ndarray')}")
   code.push("proto.length=" + (1<<total_bits))
-  code.push(["proto.get=function(i){return func(", args.join(","), ");}"].join(""))
+  code.push(["proto.get=function(i){return get_func(", args.join(","), ")}"].join(""))
+  code.push("proto.set=function(i,v){return set_func(", args.join(","), ",v)}")
   code.push("return " + className)
   
-  var store = new Function("func", code.join("\n"))
-  
-  return ndarray(store(func), shape, stride, 0)
+  var store = new Function("get_func", "set_func", code.join("\n"))
+  return ndarray(store(get_func||defaultGetter, set_func||defaultSetter), shape, stride, 0)
 }
 module.exports = createLazyArray
