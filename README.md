@@ -28,7 +28,7 @@ x.transpose(1,0).get(3,7)     //Prints out:  Called: 7 3
 
 You can also use lazy ndarrays with cwise or any other library that works with ndarrays.
 
-*HOWEVER:*  You are not allowed to assing to ndarrays:
+*HOWEVER:*  You are not allowed to write to lazy ndarrays:
 
 ```javascript
 x.set(0,0,1)  //Error!
