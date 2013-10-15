@@ -41,7 +41,7 @@ function createLazyArray(shape, get_func, set_func) {
     sz += shape_bits[i]
   }
   
-  var code = ["'use strict'"]
+  var code = []
   code.push(["function ", className, "(){};var proto=", className].join(""))
   code.push("proto.length=" + (1<<total_bits))
   code.push(["proto.get=function(i){return get_func(", args.join(","), ")}"].join(""))
